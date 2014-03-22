@@ -57,7 +57,7 @@ public:
 	std::vector<Line> scan(int x0,int y0,int x1,int y1);
 	bool checkTwoCorner(int x0,int y0,int x1,int y1);
 	bool viewTitle(cocos2d::CCPoint origin,cocos2d::CCSize visibleSize);
-	void initArray(cocos2d::CCArray* temparry);
+	void initArray(cocos2d::CCArray* temparry);//这个函数用来初始化数组
 	void initView(cocos2d::CCArray* temparry,cocos2d::CCPoint origin);
 	void setSprite();
 
