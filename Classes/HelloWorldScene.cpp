@@ -68,9 +68,6 @@ bool HelloWorld::init() {
 	this->addChild(shelfBG);
 	//这里是我加的试验背景的代码结束
 	/////////////////////////////
-	// 3. add your codes below...
-
-	// add a label shows "Hello World"
 	// create and initialize a label
 	/*
 	 //利用CCDictionary来读取xml
