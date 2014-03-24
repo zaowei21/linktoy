@@ -27,8 +27,8 @@ bool HelloWorld::init() {
 	// 这个是我把下面两句直接做了一个宏来代替.
 	//x0 = -1;y0 = -1;x1 = -1;y1 = -1;
 	//isTwo = -1;
-	for (int i = 0; i < 8; i++) {
-		for (int j = 0; j < 8; j++) {
+	for (int i = 0; i < HANG; i++) {
+		for (int j = 0; j < LIE; j++) {
 			flag1[i][j] = false;
 		}
 	}
@@ -67,6 +67,20 @@ bool HelloWorld::init() {
 	shelfBG->setPosition(ccp(winSize.width/2, winSize.height/2));
 	this->addChild(shelfBG);
 	//这里是我加的试验背景的代码结束
+
+	SpriteNum =(HANG-2)*(LIE-2);
+	//时间开始
+	//实现倒计时
+	this->_down_Label = CCLabelTTF::create();
+	CCString* downStr = CCString::createWithFormat("%d",this->_dowmTime);
+	this->_down_Label->setString(downStr->m_sString.c_str());
+	 _down_Label->setColor(ccc3(0,0,0));
+	this->addChild(this->_down_Label,3);
+	this->_down_Label->setPosition(ccp(origin.x + visibleSize.width/2,
+			origin.y + visibleSize.height - _down_Label->getContentSize().height));
+	this->_down_Label->setFontSize(30);
+	schedule(schedule_selector(HelloWorld::downTime),1.0f);
+	//时间结束
 	/////////////////////////////
 	// create and initialize a label
 	/*
@@ -152,8 +166,8 @@ void HelloWorld::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent) {
 void HelloWorld::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
 	//pSprite->setPosition(ccp(pTouch->getLocation().x, pTouch->getLocation().y));
 	CCPoint touchLocation = convertTouchToNodeSpace(pTouch);
-	for (int i = 0; i < 6; i++) {
-		for (int j = 0; j < 6; j++) {
+	for (int i = 0; i < HANG-2; i++) {
+		for (int j = 0; j < LIE-2; j++) {
 			if (totalSprite[i][j]->boundingBox().containsPoint(touchLocation)) {
 				//CCMessageBox("mSprite1 touched", "");
 				if (isTwo < 1) {
@@ -167,18 +181,18 @@ void HelloWorld::ccTouchEnded(CCTouch *pTouch, CCEvent *pEvent) {
 					y1 = j;
 					if (totalSprite[x0][y0]->getTag()
 							== totalSprite[x1][y1]->getTag()) {
-						if ((y0 == y1) && checkTwoLinex(x0, y0, x1, y1)) {
+						if ((y0 == y1) && checkTwoLinex(x0+1, y0+1, x1+1, y1+1)) {
 							setSprite();
 							break;
 						}
 						if (x0 == x1) {
-							if (checkTwoLiney(x0, y0, x1, y1)) {
+							if (checkTwoLiney(x0+1, y0+1, x1+1, y1+1)) {
 								setSprite();
 								break;
 							}
 						}
-						if (checkOneCorner(x0, y0, x1, y1)
-								|| checkTwoCorner(x0, y0, x1, y1)) {
+						if (checkOneCorner(x0+1, y0+1, x1+1, y1+1)
+								|| checkTwoCorner(x0+1, y0+1, x1+1, y1+1)) {
 							setSprite();
 							break;
 						}
@@ -221,7 +235,7 @@ bool HelloWorld::checkTwoLinex(int a0, int b0, int a1, int b1) {
 	//CCLOG("cDebug end-y=%d", end);
 	//CCLOG("cDebug XX x0=%d,y0=%d,x1=%d,y1=%d XXXXX", a0, b0, a1, b1);
 	for (int i = begin + 1; i < end; i++) {
-		if (flag1[i + 1][b0 + 1]) {
+		if (flag1[i][b0]) {
 			//CCLOG("cDebug X-FALSE-i=%d XXXXX", i);
 			return false;
 		}
@@ -240,7 +254,7 @@ bool HelloWorld::checkTwoLiney(int a0, int b0, int a1, int b1) {
 	//CCLOG("cDebug end-y=%d", end);
 	//CCLOG("cDebug YY x0=%d,y0=%d,x1=%d,y1=%d YYYYY", a0, b0, a1, b1);
 	for (int i = begin + 1; i < end; i++) {
-		if (flag1[a0 + 1][i + 1]) {
+		if (flag1[a0][i]) {
 			//CCLOG("cDebug Y-FALSE-i=%d", i);
 			return false;
 		}
@@ -256,16 +270,16 @@ bool HelloWorld::checkOneCorner(int a0, int b0, int a1, int b1) {
 	c1 = a0;
 	d0 = b0;
 	d1 = b1;
-	if (!(flag1[c0 + 1][d0 + 1])) {
+	if (!(flag1[c0][d0])) {
 		//return (checkTwoLinex(a1, b1, c0, d0) && checkTwoLiney(a0, b0, c0, d0));
 		isSuccess = (checkTwoLinex(a0, b0, c0, d0)
 				&& checkTwoLiney(a1, b1, c0, d0));
 	}
-	if ((!(flag1[c1 + 1][d1 + 1])) && !isSuccess) {
+	if ((!(flag1[c1][d1])) && !isSuccess) {
 		isSuccess = (checkTwoLinex(a1, b1, c1, d1)
 				&& checkTwoLiney(a0, b0, c1, d1));
 	}
-	CCLOG("cDebug checkOneCorner----------checkOneCorner");
+	//CCLOG("cDebug checkOneCorner----------checkOneCorner");
 	return isSuccess;
 
 }
@@ -273,45 +287,45 @@ bool HelloWorld::checkOneCorner(int a0, int b0, int a1, int b1) {
 std::vector<Line> HelloWorld::scan(int x0, int y0, int x1, int y1) {
 	std::vector<Line> linkList;
 	for (int i = y0; i >= 0; i--) {
-		if (flag1[x0 + 1][i] == false && flag1[x1 + 1][i] == false
-				&& checkTwoLinex(x0 - 1, i - 1, x1 - 1, i - 1)) {
-			linkList.push_back(Line(x0, i - 1, x1, i - 1, 0));
+		if (flag1[x0][i] == false && flag1[x1][i] == false
+				&& checkTwoLinex(x0 , i, x1, i)) {
+			linkList.push_back(Line(x0, i, x1, i, 0));
 		}
-		//CCLOG("cDebug SCAN1 x0=%d,y0=%d,x1=%d,y1=%d ", x0, y0, x1, y1);
-		//CCLOG("cDebug SCAN1 FLAG1[X0+1][i]=FLAG1[%d][%d] = %d",x0+1,i,flag1[x0 + 1][i]);
-		//CCLOG("cDebug SCAN1 FLAG1[X1+1][i]=FLAG1[%d][%d] = %d",x1+1,i,flag1[x1 + 1][i]);
-		//CCLOG("cDebug SCAN1 CheckTwoLinex=%d ", checkTwoLinex(x0-1, i-1, x1-1, i-1));
+		CCLOG("cDebug SCAN1 x0=%d,y0=%d,x1=%d,y1=%d ", x0, y0, x1, y1);
+		CCLOG("cDebug SCAN1 FLAG1[X0+1][i]=FLAG1[%d][%d] = %d",x0+1,i,flag1[x0 ][i]);
+		CCLOG("cDebug SCAN1 FLAG1[X1+1][i]=FLAG1[%d][%d] = %d",x1+1,i,flag1[x1][i]);
+		CCLOG("cDebug SCAN1 CheckTwoLinex=%d ", checkTwoLinex(x0, i, x1, i));
 	}
 
-	for (int i = y0; i < 8; i++) {
-		if (flag1[x0 + 1][i] == false && flag1[x1 + 1][i] == false
-				&& checkTwoLinex(x0 - 1, i - 1, x1 - 1, i - 1)) {
-			linkList.push_back(Line(x0, i - 1, x1, i - 1, 0));
+	for (int i = y0; i < LIE; i++) {
+		if (flag1[x0][i] == false && flag1[x1][i] == false
+				&& checkTwoLinex(x0, i, x1, i)) {
+			linkList.push_back(Line(x0, i, x1, i, 0));
 		}
 		CCLOG("cDebug SCAN2 x0=%d,y0=%d,x1=%d,y1=%d ", x0, y0, x1, y1);
-		CCLOG("cDebug SCAN2 FLAG1[X0+1][i]=FLAG1[%d][%d] = %d", x0+1, i,
-				flag1[x0 + 1][i]);
-		CCLOG("cDebug SCAN2 FLAG1[X1+1][i]=FLAG1[%d][%d] = %d", x1+1, i,
-				flag1[x1 + 1][i]);
+		CCLOG("cDebug SCAN2 FLAG1[X0+1][i]=FLAG1[%d][%d] = %d", x0, i,
+				flag1[x0][i]);
+		CCLOG("cDebug SCAN2 FLAG1[X1+1][i]=FLAG1[%d][%d] = %d", x1, i,
+				flag1[x1][i]);
 		CCLOG("cDebug SCAN2 CheckTwoLinex=%d ",
-				checkTwoLinex(x0-1, i-1, x1-1, i-1));
+				checkTwoLinex(x0, i, x1, i));
 	}
 
 	for (int j = x0; j >= 0; j--) {
-		if (flag1[j][y0 + 1] == false && flag1[j][y1 + 1] == false
-				&& checkTwoLiney(j - 1, y0 - 1, j - 1, y1 - 1)) {
-			linkList.push_back(Line(j - 1, y0, j - 1, y1, 1));
+		if (flag1[j][y0] == false && flag1[j][y1] == false
+				&& checkTwoLiney(j, y0, j, y1)) {
+			linkList.push_back(Line(j, y0, j, y1, 1));
 		}
-		//CCLOG("cDebug SCAN2 x0=%d,y0=%d,x1=%d,y1=%d ", x0, y0, x1, y1);
-		//CCLOG("cDebug SCAN2 FLAG1[j][y0+1]=FLAG1[%d][%d] = %d",j,y0+1,flag1[j][y0+1]);
-		//CCLOG("cDebug SCAN2 FLAG1[j][y1+1]=FLAG1[%d][%d] = %d",j,y1+1,flag1[j][y1+1]);
-		//CCLOG("cDebug SCAN2 CheckTwoLiney=%d ", checkTwoLinex(j-1, y0-1, j-1, y1-1));
+		CCLOG("cDebug SCAN3 x0=%d,y0=%d,x1=%d,y1=%d ", x0, y0, x1, y1);
+		CCLOG("cDebug SCAN3 FLAG1[j][y0+1]=FLAG1[%d][%d] = %d",j,y0,flag1[j][y0]);
+		CCLOG("cDebug SCAN3 FLAG1[j][y1+1]=FLAG1[%d][%d] = %d",j,y1,flag1[j][y1]);
+		CCLOG("cDebug SCAN3 CheckTwoLiney=%d ", checkTwoLinex(j, y0, j, y1));
 	}
 
-	for (int j = x0; j < 8; j++) {
-		if (flag1[j][y0 + 1] == false && flag1[j][y1 + 1] == false
-				&& checkTwoLiney(j - 1, y0 - 1, j - 1, y1 - 1)) {
-			linkList.push_back(Line(j - 1, y0, j - 1, y1, 1));
+	for (int j = x0; j < HANG; j++) {
+		if (flag1[j][y0] == false && flag1[j][y1] == false
+				&& checkTwoLiney(j, y0 , j, y1)) {
+			linkList.push_back(Line(j, y0, j, y1, 1));
 		}
 	}
 
@@ -365,7 +379,7 @@ void HelloWorld::initArray(CCArray* temparry) {
 	CCSprite* temp1;
 	CCSprite* temp2;
 	// 一次生成两张一样的
-	for (int i = 0; i < 18; i++) {
+	for (int i = 0; i < (HANG-2)*(LIE-2)/2; i++) {
 		int num = CCRANDOM_0_1() * 12; //因为是图片的张数是从0到36张 所以随机从0 到35
 		temp1 = CCSprite::createWithSpriteFrameName(g_Names[num].c_str());
 		temp1->setTag(num);
@@ -378,14 +392,14 @@ void HelloWorld::initArray(CCArray* temparry) {
 }
 
 void HelloWorld::initView(CCArray* temparry, CCPoint origin) {
-	for (int i = 0; i < 6; i++) { //i相当于X轴,沿屏幕短的方向
-		for (int j = 0; j < 6; j++) { //J相当于Y轴,沿屏幕长的方向伸展
+	for (int i = 0; i < HANG-2; i++) { //i相当于X轴,沿屏幕短的方向
+		for (int j = 0; j < LIE-2; j++) { //J相当于Y轴,沿屏幕长的方向伸展
 
 			totalSprite[i][j] = (CCSprite*) temparry->randomObject();
 			temparry->removeObject(totalSprite[i][j], false);
 			if (i == 0 && j == 0) {
 				totalSprite[i][j]->setPosition(
-						ccp(origin.x + totalSprite[i][j]->getContentSize().width/2, origin.y + totalSprite[i][j]->getContentSize().height/2));
+						ccp(6+origin.x + totalSprite[i][j]->getContentSize().width/2, 6+origin.y + totalSprite[i][j]->getContentSize().height/2));
 					} else if (j == 0) {
 						totalSprite[i][j]->setPosition(
 								ccp(totalSprite[i-1][j]->getPositionX(), totalSprite[i-1][j]->getContentSize().height + totalSprite[i-1][j]->getPositionY()));
@@ -407,8 +421,26 @@ void HelloWorld::setSprite() {
 	totalSprite[x1][y1]->setTag(999 * CCRANDOM_0_1());
 	flag1[x0 + 1][y0 + 1] = false;
 	flag1[x1 + 1][y1 + 1] = false;
+	SpriteNum-=2;
+	if(SpriteNum == 0){
+		CCMessageBox("Game Passed!", "");
+		CCDirector::sharedDirector()->getScheduler()->unscheduleAll();
+	}
 	isTwo = 0;
+	for(int i=0;i<HANG;i++){
+		CCLOG("cDebug %d %d %d %d %d %d %d %d %d %d", flag1[i][0],flag1[i][1],flag1[i][2],flag1[i][3],flag1[i][4],flag1[i][5],flag1[i][6],flag1[i][7],flag1[i][8],flag1[i][9]);
+	}
+	CCLOG("cDebug END-END---END");
 }
+
+//更新倒计时
+void HelloWorld::downTime(float dt)
+{
+this->_dowmTime =this->_dowmTime +1;
+CCString* downStr = CCString::createWithFormat("%d",this->_dowmTime);
+this->_down_Label->setString(downStr->m_sString.c_str());
+}
+
 
 Line::Line(int x6, int y6, int x7, int y7, int direct) {
 	this->x6 = x6;

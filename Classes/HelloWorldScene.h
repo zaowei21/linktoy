@@ -5,7 +5,8 @@
 #include <vector>
 
 #define XY x0 = -1;y0 = -1;x1 = -1;y1 = -1;isTwo = -1;
-
+#define HANG 8
+#define LIE 10
 enum {
 	PIG = 0,
 	HORSE,
@@ -47,7 +48,8 @@ public:
 
 	// a selector callback
 	void menuCloseCallback(CCObject* pSender);
-
+	cocos2d::CCLabelTTF* _down_Label;
+	int _dowmTime;
 	// implement the "static node()" method manually
 	CREATE_FUNC(HelloWorld)
 	;
@@ -60,6 +62,7 @@ public:
 	void initArray(cocos2d::CCArray* temparry);//这个函数用来初始化数组
 	void initView(cocos2d::CCArray* temparry,cocos2d::CCPoint origin);
 	void setSprite();
+	void downTime(float dt);
 
 	virtual void registerWithTouchDispatcher(void);
 	virtual bool ccTouchBegan(cocos2d::CCTouch *pTouch,
@@ -72,11 +75,12 @@ public:
 			cocos2d::CCEvent *pEvent);
 
 	cocos2d::CCSprite* pSprite;
-	cocos2d::CCSprite* totalSprite[6][6];
-	bool flag0[6][6];
-	bool flag1[8][8];
+	cocos2d::CCSprite* totalSprite[HANG-2][LIE-2];
+	bool flag0[HANG-2][LIE-2];
+	bool flag1[HANG][LIE];
 	int x0, y0 ,x1,y1;
 	int isTwo;
+	int SpriteNum;
 };
 
 #endif // __HELLOWORLD_SCENE_H__
