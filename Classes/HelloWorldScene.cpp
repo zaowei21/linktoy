@@ -399,7 +399,7 @@ void HelloWorld::initView(CCArray* temparry, CCPoint origin) {
 			temparry->removeObject(totalSprite[i][j], false);
 			if (i == 0 && j == 0) {
 				totalSprite[i][j]->setPosition(
-						ccp(6+origin.x + totalSprite[i][j]->getContentSize().width/2, 6+origin.y + totalSprite[i][j]->getContentSize().height/2));
+						ccp(16+origin.x + totalSprite[i][j]->getContentSize().width/2, 16+origin.y + totalSprite[i][j]->getContentSize().height/2));
 					} else if (j == 0) {
 						totalSprite[i][j]->setPosition(
 								ccp(totalSprite[i-1][j]->getPositionX(), totalSprite[i-1][j]->getContentSize().height + totalSprite[i-1][j]->getPositionY()));

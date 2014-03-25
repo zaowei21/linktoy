@@ -5,8 +5,8 @@
 #include <vector>
 
 #define XY x0 = -1;y0 = -1;x1 = -1;y1 = -1;isTwo = -1;
-#define HANG 8
-#define LIE 10
+#define HANG 10
+#define LIE 12
 enum {
 	PIG = 0,
 	HORSE,
