@@ -42,14 +42,15 @@ bool HelloWorld::init() {
 	//    you may modify it.
 
 	// add a "close" icon to exit the progress. it's an autorelease object
-	CCMenuItemImage *pCloseItem = CCMenuItemImage::create("CloseNormal.png",
-			"CloseSelected.png", this,
+	CCMenuItemImage *pCloseItem = CCMenuItemImage::create("return.png",
+			"returned.png", this,
 			menu_selector(HelloWorld::menuCloseCallback));
 
 	pCloseItem->setPosition(
 			ccp(origin.x + visibleSize.width - pCloseItem->getContentSize().width/2 -10 ,
 					origin.y + pCloseItem->getContentSize().height/2 + 10));
-
+	//pCloseItem->setScaleX(3.0f);
+	//pCloseItem->setScaleY(3.0f);
 	// create menu, it's an autorelease object
 	CCMenu* pMenu = CCMenu::create(pCloseItem, NULL);
 	pMenu->setPosition(CCPointZero);
@@ -70,82 +71,43 @@ bool HelloWorld::init() {
 
 	SpriteNum =(HANG-2)*(LIE-2);
 	//时间开始
+	//利用CCDictionary来读取xml
+		//stringscn.xml要放在assets这个目录下,在eclipse的android下
+		CCDictionary *strings = CCDictionary::createWithContentsOfFile(
+				"stringscn.xml");
+		//读取Hello键中的值 objectForKey根据key，获取对应的string
+		const char *hello =
+				((CCString*) strings->objectForKey("Hello"))->m_sString.c_str();
+
+		CCLabelTTF* pLabel = CCLabelTTF::create(hello, "STHeitiK-Medium", 34);
+
 	//实现倒计时
 	this->_down_Label = CCLabelTTF::create();
 	CCString* downStr = CCString::createWithFormat("%d",this->_dowmTime);
 	this->_down_Label->setString(downStr->m_sString.c_str());
 	 _down_Label->setColor(ccc3(0,0,0));
-	this->addChild(this->_down_Label,3);
-	this->_down_Label->setPosition(ccp(origin.x + visibleSize.width/2,
-			origin.y + visibleSize.height - _down_Label->getContentSize().height));
-	this->_down_Label->setFontSize(30);
+	 pLabel->setColor(ccc3(1,1,1));
+	this->addChild(this->_down_Label,1);
+	this->_down_Label->setFontSize(34);
+	this->_down_Label->setPosition(ccp(origin.x + visibleSize.width -_down_Label->getContentSize().width-26,
+			origin.y + visibleSize.height - _down_Label->getContentSize().height/2-5));
+
+	pLabel->setPosition(ccp(origin.x + visibleSize.width - pLabel->getContentSize().width - _down_Label->getContentSize().width-16,
+			origin.y + visibleSize.height- _down_Label->getContentSize().height/2-5));
+
+	// add the label as a child to this layer
+	this->addChild(pLabel, 1);
 	schedule(schedule_selector(HelloWorld::downTime),1.0f);
 	//时间结束
 	/////////////////////////////
 	// create and initialize a label
-	/*
-	 //利用CCDictionary来读取xml
-	 //stringscn.xml要放在assets这个目录下,在eclipse的android下
-	 CCDictionary *strings = CCDictionary::createWithContentsOfFile(
-	 "stringscn.xml");
-	 //读取Hello键中的值 objectForKey根据key，获取对应的string
-	 const char *hello =
-	 ((CCString*) strings->objectForKey("Hello"))->m_sString.c_str();
-
-	 CCLabelTTF* pLabel = CCLabelTTF::create(hello, "Arial", 34);
-
-	 // position the label on the center of the screen
-	 pLabel->setPosition(ccp(origin.x + visibleSize.width/2,
-	 origin.y + visibleSize.height - pLabel->getContentSize().height));
-
-	 // add the label as a child to this layer
-	 this->addChild(pLabel, 1);
-	 */
-	viewTitle(origin, visibleSize);
+	//viewTitle(origin, visibleSize);
 	CCSpriteFrameCache* cache = CCSpriteFrameCache::sharedSpriteFrameCache();
 	cache->addSpriteFramesWithFile("ss.plist", "ss.png");
 
 	CCArray* temparry = CCArray::create();
 	initArray(temparry);
-	/*
-	 CCSprite* temp1;
-	 CCSprite* temp2;
-	 // 一次生成两张一样的
-	 for (int i = 0; i < 18; i++) {
-	 int num = CCRANDOM_0_1() * 12; //因为是图片的张数是从0到36张 所以随机从0 到35
-	 temp1 = CCSprite::createWithSpriteFrameName(g_Names[num].c_str());
-	 temp1->setTag(num);
-	 temp2 = CCSprite::createWithSpriteFrameName(g_Names[num].c_str());
-	 temp2->setTag(num);
-	 temparry->addObject(temp1);
-	 temparry->addObject(temp2);
-	 //CCLOG("cDebug GetTag = %d", temp1->getTag());
-	 }
-	 */
-	initView(temparry, origin);
-	/*
-	 for (int i = 0; i < 6; i++) { //i相当于X轴,沿屏幕短的方向
-	 for (int j = 0; j < 6; j++) { //J相当于Y轴,沿屏幕长的方向伸展
-	 //CCLOG("cDebug 33=%d", j);
-	 totalSprite[i][j] = (CCSprite*) temparry->randomObject();
-	 //CCLOG("cDebug Num66=%d",temp3->getNum());
-	 temparry->removeObject(totalSprite[i][j], false);
-	 if (i == 0 && j == 0) {
-	 totalSprite[i][j]->setPosition(
-	 ccp(origin.x + totalSprite[i][j]->getContentSize().width/2, origin.y + totalSprite[i][j]->getContentSize().height/2));
-	 } else if (j == 0) {
-	 totalSprite[i][j]->setPosition(
-	 ccp(totalSprite[i-1][j]->getPositionX(), totalSprite[i-1][j]->getContentSize().height + totalSprite[i-1][j]->getPositionY()));
-	 } else {
-	 totalSprite[i][j]->setPosition(
-	 ccp(totalSprite[i][j-1]->getPositionX() + totalSprite[i][j-1]->getContentSize().width, totalSprite[i][j-1]->getPositionY()));
-	 }
-	 this->addChild(totalSprite[i][j]);
-	 flag0[i][j] = true;
-	 flag1[i + 1][j + 1] = true;
-	 }
-	 }
-	 */
+	initView(temparry, origin,visibleSize);
 	this->setTouchEnabled(true);
 	return true;
 }
@@ -215,6 +177,10 @@ void HelloWorld::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent) {
 }
 
 void HelloWorld::menuCloseCallback(CCObject* pSender) {
+	CCDirector* pDirector = CCDirector::sharedDirector();
+	CCScene *pScene = LoadMenu::scene();
+	pDirector->replaceScene(CCTransitionFade::create(2, pScene));
+/*
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WINRT) || (CC_TARGET_PLATFORM == CC_PLATFORM_WP8)
 	CCMessageBox("You pressed the close button. Windows Store Apps do not implement a close button.","Alert");
 #else
@@ -223,6 +189,7 @@ void HelloWorld::menuCloseCallback(CCObject* pSender) {
 	exit(0);
 #endif
 #endif
+*/
 }
 
 //这个函数检查同一行是不是相同的可以连通.
@@ -391,7 +358,7 @@ void HelloWorld::initArray(CCArray* temparry) {
 	}
 }
 
-void HelloWorld::initView(CCArray* temparry, CCPoint origin) {
+void HelloWorld::initView(CCArray* temparry, CCPoint origin,CCSize visibleSize) {
 	for (int i = 0; i < HANG-2; i++) { //i相当于X轴,沿屏幕短的方向
 		for (int j = 0; j < LIE-2; j++) { //J相当于Y轴,沿屏幕长的方向伸展
 
@@ -399,10 +366,10 @@ void HelloWorld::initView(CCArray* temparry, CCPoint origin) {
 			temparry->removeObject(totalSprite[i][j], false);
 			if (i == 0 && j == 0) {
 				totalSprite[i][j]->setPosition(
-						ccp(16+origin.x + totalSprite[i][j]->getContentSize().width/2, 16+origin.y + totalSprite[i][j]->getContentSize().height/2));
+						ccp(16+origin.x + totalSprite[i][j]->getContentSize().width/2, visibleSize.height+origin.y-3 - totalSprite[i][j]->getContentSize().height));
 					} else if (j == 0) {
 						totalSprite[i][j]->setPosition(
-								ccp(totalSprite[i-1][j]->getPositionX(), totalSprite[i-1][j]->getContentSize().height + totalSprite[i-1][j]->getPositionY()));
+								ccp(totalSprite[i-1][j]->getPositionX(), totalSprite[i-1][j]->getPositionY()- totalSprite[i-1][j]->getContentSize().height));
 					} else {
 						totalSprite[i][j]->setPosition(
 								ccp(totalSprite[i][j-1]->getPositionX() + totalSprite[i][j-1]->getContentSize().width, totalSprite[i][j-1]->getPositionY()));
@@ -424,7 +391,7 @@ void HelloWorld::setSprite() {
 	SpriteNum-=2;
 	if(SpriteNum == 0){
 		CCMessageBox("Game Passed!", "");
-		CCDirector::sharedDirector()->getScheduler()->unscheduleAll();
+		unschedule(schedule_selector(HelloWorld::downTime));
 	}
 	isTwo = 0;
 	for(int i=0;i<HANG;i++){

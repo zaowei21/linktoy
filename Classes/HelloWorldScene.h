@@ -2,11 +2,12 @@
 #define __HELLOWORLD_SCENE_H__
 
 #include "cocos2d.h"
+#include "LoadMenu.h"
 #include <vector>
 
 #define XY x0 = -1;y0 = -1;x1 = -1;y1 = -1;isTwo = -1;
-#define HANG 10
-#define LIE 12
+#define HANG 12
+#define LIE 10
 enum {
 	PIG = 0,
 	HORSE,
@@ -60,7 +61,7 @@ public:
 	bool checkTwoCorner(int x0,int y0,int x1,int y1);
 	bool viewTitle(cocos2d::CCPoint origin,cocos2d::CCSize visibleSize);
 	void initArray(cocos2d::CCArray* temparry);//这个函数用来初始化数组
-	void initView(cocos2d::CCArray* temparry,cocos2d::CCPoint origin);
+	void initView(cocos2d::CCArray* temparry,cocos2d::CCPoint origin,cocos2d::CCSize visibleSize);
 	void setSprite();
 	void downTime(float dt);
 

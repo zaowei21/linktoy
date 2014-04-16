@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "HelloWorldScene.h"
+#include "LoadMenu.h"
 
 USING_NS_CC;
 
@@ -17,7 +18,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     CCEGLView* pEGLView = CCEGLView::sharedOpenGLView();
     pDirector->setOpenGLView(pEGLView);
     //pEGLView->setDesignResolutionSize(640, 480, kResolutionNoBorder);
-    pEGLView->setDesignResolutionSize(1280, 720, kResolutionFixedHeight);
+    pEGLView->setDesignResolutionSize(720, 1280, kResolutionFixedWidth);
 
 
 	
@@ -28,7 +29,8 @@ bool AppDelegate::applicationDidFinishLaunching() {
     pDirector->setAnimationInterval(1.0 / 60);
 
     // create a scene. it's an autorelease object
-    CCScene *pScene = HelloWorld::scene();
+    //CCScene *pScene = HelloWorld::scene();
+    CCScene *pScene = LoadMenu::scene();
 
     // run
     pDirector->runWithScene(pScene);

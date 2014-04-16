@@ -3,6 +3,8 @@
 <plist version="1.0">  
 <dict>  
     <key>Hello</key>  
-    <string>你好吗! Cocos2d-X</string>  
+    <string>用时:</string>  
+    <key>MenuTitle</key>
+    <string>12生肖连连看</string>
 </dict>  
 </plist>  

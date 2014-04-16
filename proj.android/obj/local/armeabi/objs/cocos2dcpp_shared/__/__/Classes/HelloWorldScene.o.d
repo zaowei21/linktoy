@@ -203,7 +203,8 @@ obj/local/armeabi/objs/cocos2dcpp_shared/__/__/Classes/HelloWorldScene.o: \
  D:\adt\cocos2d-x-2.2.1/cocos2dx/CCScheduler.h \
  D:\adt\cocos2d-x-2.2.1/cocos2dx/support/data_support/uthash.h \
  D:\adt\cocos2d-x-2.2.1/cocos2dx/support/component/CCComponent.h \
- D:\adt\cocos2d-x-2.2.1/cocos2dx/support/component/CCComponentContainer.h
+ D:\adt\cocos2d-x-2.2.1/cocos2dx/support/component/CCComponentContainer.h \
+ jni/../../Classes/LoadMenu.h
 
 jni/../../Classes/HelloWorldScene.h:
 
@@ -612,3 +613,5 @@ D:\adt\cocos2d-x-2.2.1/cocos2dx/support/data_support/uthash.h:
 D:\adt\cocos2d-x-2.2.1/cocos2dx/support/component/CCComponent.h:
 
 D:\adt\cocos2d-x-2.2.1/cocos2dx/support/component/CCComponentContainer.h:
+
+jni/../../Classes/LoadMenu.h:
